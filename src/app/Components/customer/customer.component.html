@@ -66,8 +66,8 @@
         <div class="mb-0">New Customer</div>
       </div>
       <div class="card-body">
-        <div class="container mt-5">
-          <form>
+        <div class="container mt-2">
+          <form #form="ngForm">
             <div class="row mb-3">
               <!-- First Name -->
               <div class="col-md-6">
@@ -75,12 +75,21 @@
                 <input
                   type="text"
                   [(ngModel)]="customerObj.firstName"
+                  #firstName="ngModel"
                   class="form-control"
                   id="firstName"
-                  name="FirstName"
+                  name="firstName"
                   required
                 />
+                @if(firstName.touched){
+                  <div class="text-danger">
+                    @if(firstName?.errors?.['required']){
+                    <span> First Name is required</span>
+                    }
+                  </div>
+              }
               </div>
+
               <!-- Last Name -->
               <div class="col-md-6">
                 <label for="lastName" class="form-label">Last Name</label>
@@ -89,9 +98,17 @@
                   [(ngModel)]="customerObj.lastName"
                   class="form-control"
                   id="lastName"
-                  name="LastName"
+                  name="lastName"
                   required
+                   #lastName="ngModel"
                 />
+                @if(lastName.touched){
+                  <div class="text-danger">
+                    @if(lastName?.errors?.['required']){
+                    <span> Last Name is required</span>
+                    }
+                  </div>
+              }
               </div>
             </div>
 
@@ -103,9 +120,20 @@
                 [(ngModel)]="customerObj.phoneNumber"
                 class="form-control"
                 id="phoneNumber"
-                name="PhoneNumber"
+                name="phoneNumber"
                 required
-              />
+                pattern="^\d{10}$"
+                #phoneNumber="ngModel"
+                />
+                @if(phoneNumber.touched){
+                  <div class="text-danger">
+                    @if(phoneNumber?.errors?.['required']){
+                    <span> Phone Number is required</span>
+                    }@else if (phoneNumber?.errors?.['pattern']) {
+                      <span>Phone Number must be exactly 10 digits</span>
+                    }
+                  </div>
+              }
             </div>
 
             <!-- Email -->
@@ -116,8 +144,21 @@
                 [(ngModel)]="customerObj.email"
                 class="form-control"
                 id="email"
-                name="Email"
-              />
+                name="email"
+                required
+                pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                #email="ngModel"
+                />
+                
+                @if(email.touched){
+                  <div class="text-danger">
+                    @if(email?.errors?.['required']){
+                    <span> Email is required</span>
+                  }@else if (email?.errors?.['pattern']) {
+                    <span>Enter valid email address</span>
+                  }
+                  </div>
+              }
             </div>
 
             <!-- Address -->
@@ -128,7 +169,7 @@
                 [(ngModel)]="customerObj.address"
                 class="form-control"
                 id="address"
-                name="Address"
+                name="address"
               ></textarea>
             </div>
 
@@ -136,7 +177,7 @@
               <!-- City -->
               <div class="col-md-6">
                 <label for="city" class="form-label">City</label>
-                <input type="text" class="form-control" [(ngModel)]="customerObj.city" id="city" name="City" />
+                <input type="text" class="form-control" [(ngModel)]="customerObj.city" id="city" name="city" />
               </div>
 
               <!-- Postal Code -->
@@ -147,15 +188,24 @@
                   [(ngModel)]="customerObj.postalCode"
                   class="form-control"
                   id="postalCode"
-                  name="PostalCode"
+                  name="postalCode"
+                pattern="^\d{5}$"
+                #postalCode="ngModel"
                 />
+                @if(postalCode.touched){
+                  <div class="text-danger">
+                    @if (postalCode?.errors?.['pattern']) {
+                      <span>Digits Only</span>
+                    }
+                  </div>
+              }
               </div>
             </div>
 
             <!-- Submit Button -->
             <div class="row">
               <div class="col-6">
-                <button type="submit" class="btn btn-primary w-100" (click)="onSaveClient()">{{customerObj.id != 0 ? 'Update Customer':'Save Customer'}}</button>
+                <button type="submit" class="btn btn-primary w-100" [disabled]="!form.valid" (click)="onSaveClient()">{{customerObj.id != 0 ? 'Update Customer':'Save Customer'}}</button>
               </div>
               <div class="col-6">
                 <button type="button" class="btn btn-warning w-100">
@@ -163,6 +213,7 @@
                 </button>
               </div>
             </div>
+            
           </form>
         </div>
       </div>

@@ -30,5 +30,4 @@ export class MasterService {
     return this.http.put<APIResponceModel>(url,customerData);
   }
 
-
 }
