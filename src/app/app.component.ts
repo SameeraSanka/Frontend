@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { TestComponent } from "./Components/test/test.component";
-import { GetCustomerComponent } from "./Components/get-customer/get-customer.component";
 import { MainComponent } from "./Components/main/main.component";
 
 @Component({
