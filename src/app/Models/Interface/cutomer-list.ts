@@ -9,3 +9,10 @@ export interface ICutomerList {
     city: string;
     postalCode:number;
 }
+
+export interface APIResponceModel{
+    isSuccess: boolean;
+    message: string;
+    code: number;
+    data: any;
+}
