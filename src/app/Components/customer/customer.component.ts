@@ -37,17 +37,31 @@ export class CustomerComponent implements OnInit {
   }
 
   onSaveClient() {
-    debugger;
-    this.customerService.addCustomer(this.customerObj).subscribe((res: APIResponceModel) => {
-      if(res.isSuccess){
-        alert("Customer added successfully")
-        this.loadCustomers();
-        this.customerObj = new Customer();
-      }else{
-        alert(res.message)
-      }
-    })
-
+    if (this.customerObj.id) { // (Update existing customer)
+      this.customerService.updateCustomer(this.customerObj.id, this.customerObj).subscribe((res: APIResponceModel) => {
+        if (res.isSuccess) {
+          alert("Customer updated successfully");
+          this.loadCustomers();
+          this.customerObj = new Customer(); // Reset customer object after update
+        } else {
+          alert(res.message);
+        }
+      }, error => {
+        alert(error.message);
+      });
+    } else { // add new customer
+      this.customerService.addCustomer(this.customerObj).subscribe((res: APIResponceModel) => {
+        if (res.isSuccess) {
+          alert("Customer added successfully");
+          this.loadCustomers();
+          this.customerObj = new Customer(); // Reset customer object after addition
+        } else {
+          alert(res.message);
+        }
+      }, error => {
+        alert(error.message);
+      });
+    }
   }
 
   onDelete(id:number){
@@ -62,5 +76,9 @@ export class CustomerComponent implements OnInit {
         }
       });
     }
+  }
+
+  onEdit(data: Customer) {
+    this.customerObj = { ...data }; // Use spread operator to clone the data into customerObj
   }
 }

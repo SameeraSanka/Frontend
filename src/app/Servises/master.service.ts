@@ -25,5 +25,10 @@ export class MasterService {
     return this.http.delete<APIResponceModel>(url);
   }
 
+  updateCustomer(id:number, customerData: any): Observable<APIResponceModel>{
+    const url = environment.API_URL +`${id}`;
+    return this.http.put<APIResponceModel>(url,customerData);
+  }
+
 
 }
