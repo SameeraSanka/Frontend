@@ -1,43 +1,48 @@
 <p>Data List:</p>
 
-
 <div class="row">
-    <div class="col-12 d-flex ">
-        <div class="table-container">
-            <button class="btn btn-primary">Add Customer</button>
-            <table class="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Full Name</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Phone Number</th>
-                        <th>Email</th>
-                        <th>Address</th>
-                        <th>City</th>
-                        <th>Postal Code</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let item of dataList">
-                        <td>{{ item.id }}</td>
-                        <td>{{ item.fullName }}</td>
-                        <td>{{ item.firstName }}</td>
-                        <td>{{ item.lastName }}</td>
-                        <td>{{ item.phoneNumber }}</td>
-                        <td>{{ item.email }}</td>
-                        <td>{{ item.address }}</td>
-                        <td>{{ item.city }}</td>
-                        <td>{{ item.postalCode }}</td>
-                        <td>
-                            <button class="btn btn-primary btn-sm">Edit</button>
-                            <button class="btn btn-danger btn-sm">Delete</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+  @if(isLoader){
+  <div class="d-flex justify-content-center">
+    <div class="spinner-border" role="status"></div>
+  </div>
+  }@else {
+  <div class="col-12 d-flex">
+    <div class="table-container">
+      <button class="btn btn-primary">Add Customer</button>
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Full Name</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Phone Number</th>
+            <th>Email</th>
+            <th>Address</th>
+            <th>City</th>
+            <th>Postal Code</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of dataList">
+            <td>{{ item.id }}</td>
+            <td>{{ item.fullName }}</td>
+            <td>{{ item.firstName }}</td>
+            <td>{{ item.lastName }}</td>
+            <td>{{ item.phoneNumber }}</td>
+            <td>{{ item.email }}</td>
+            <td>{{ item.address }}</td>
+            <td>{{ item.city }}</td>
+            <td>{{ item.postalCode }}</td>
+            <td>
+              <button class="btn btn-primary btn-sm">Edit</button>
+              <button class="btn btn-danger btn-sm">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
+  </div>
+  }
 </div>

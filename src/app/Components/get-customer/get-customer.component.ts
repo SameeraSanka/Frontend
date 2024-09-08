@@ -14,13 +14,16 @@ import { CommonModule } from '@angular/common';
 export class GetCustomerComponent implements OnInit {
 
   dataList: ICutomerList[] = [];
-  masterService = inject(MasterService)
+  masterService = inject(MasterService);
+  isLoader: boolean = true;
 
   ngOnInit(): void {
     this.masterService.getCustomers().subscribe((response: APIResponceModel)=>{
       this.dataList = response.data;
+      this.isLoader = false;
     },error=>{
       alert(error.message)
+      this.isLoader = false;
     })  
   }
 
