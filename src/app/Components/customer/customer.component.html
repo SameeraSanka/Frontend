@@ -17,9 +17,10 @@
                   <thead>
                     <tr>
                       <!-- <th>ID</th> -->
-                      <th>Full Name</th>
+                      <th>Customer Number</th>
                       <th>First Name</th>
                       <th>Last Name</th>
+                      <th>Full Name</th>
                       <th>Phone Number</th>
                       <th>Email</th>
                       <th>Address</th>
@@ -29,11 +30,12 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let item of customerList">
+                    <tr *ngFor="let item of customerList; let i = index">
                       <!-- <td>{{ item.id }}</td> -->
-                      <td>{{ item.fullName }}</td>
+                      <td>{{ i + 1 }}</td>
                       <td>{{ item.firstName }}</td>
                       <td>{{ item.lastName }}</td>
+                      <td>{{ item.fullName }}</td>
                       <td>{{ item.phoneNumber }}</td>
                       <td>{{ item.email }}</td>
                       <td>{{ item.address }}</td>

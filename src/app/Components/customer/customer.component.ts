@@ -8,6 +8,9 @@ import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
 
 
+import { firstValueFrom } from 'rxjs';
+
+
 @Component({
   selector: 'app-customer',
   standalone: true,
@@ -16,7 +19,7 @@ import Swal from 'sweetalert2';
   styleUrl: './customer.component.css'
 })
 export class CustomerComponent implements OnInit {
-
+  
 
   customerObj: Customer = new Customer();
   customerList: ICutomerList[] = [];
@@ -27,81 +30,86 @@ export class CustomerComponent implements OnInit {
     this.loadCustomers();
   }
 
-  loadCustomers() {
-    this.customerService.getCustomers().subscribe((res: APIResponceModel) => {
+  async loadCustomers() {
+    this.isLoader = true;
+    
+    try {
+      const res: APIResponceModel = await firstValueFrom(this.customerService.getCustomers());
       this.customerList = res.data;
+    } catch (ex) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Error loading customers',
+        confirmButtonText: 'OK'
+      });
+    } finally {
       this.isLoader = false;
-    }, error => {
-      alert(error.message)
-      this.isLoader = false;
-    })
-
+    }
   }
+
+  async onSaveClient() {
+    try {
+      let res: APIResponceModel;
   
-  onSaveClient() {
-    if (this.customerObj.id) { // (Update existing customer)
-      this.customerService.updateCustomer(this.customerObj.id, this.customerObj).subscribe((res: APIResponceModel) => {
+      if (this.customerObj.id) { // Update existing customer
+        res = await firstValueFrom(this.customerService.updateCustomer(this.customerObj.id, this.customerObj));
         if (res.isSuccess) {
-          // Success SweetAlert for update
           Swal.fire('Updated!', 'Customer updated successfully', 'success');
           this.loadCustomers();
           this.customerObj = new Customer(); // Reset customer object after update
         } else {
-          // Error SweetAlert for update
           Swal.fire('Error!', res.message, 'error');
         }
-      }, error => {
-        // Error SweetAlert for update failure
-        Swal.fire('Error!', error.message, 'error');
-      });
-    } else { // Add new customer
-      this.customerService.addCustomer(this.customerObj).subscribe((res: APIResponceModel) => {
+      } else { // Add new customer
+        res = await firstValueFrom(this.customerService.addCustomer(this.customerObj));
         if (res.isSuccess) {
-          // Success SweetAlert for add
           Swal.fire('Added!', 'Customer added successfully', 'success');
           this.loadCustomers();
           this.customerObj = new Customer(); // Reset customer object after addition
         } else {
-          // Error SweetAlert for add
           Swal.fire('Error!', res.message, 'error');
         }
-      }, error => {
-        // Error SweetAlert for add failure
-        Swal.fire('Error!', error.message, 'error');
-      });
+      }
+    } catch (error: any) {
+      Swal.fire('Error!', error.message, 'error');
     }
   }
 
 
-  onDelete(id: number) {
+  async onDelete(id: number) {
     // SweetAlert confirmation box
-    Swal.fire({
+    const result = await Swal.fire({
       title: 'Are you sure you want to delete?',
       text: 'You will not be able to recover this customer!',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Yes, delete it!',
       cancelButtonText: 'No, keep it'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // Proceed with deletion if confirmed
-        this.customerService.deleteCustomer(id).subscribe((res: APIResponceModel) => {
-          if (res.isSuccess) {
-            // Success message using SweetAlert
-            Swal.fire('Deleted!', 'Customer has been deleted successfully.', 'success');
-            this.loadCustomers(); // Reload the customer list
-          } else {
-            Swal.fire('Error!', res.message, 'error');
-          }
-        });
-      } else if (result.dismiss === Swal.DismissReason.cancel) {
-        // Optional message for cancellation
-        Swal.fire('Cancelled', 'Customer deletion has been cancelled.', 'info');
-      }
     });
+  
+    if (result.isConfirmed) {
+      try {
+        // Proceed with deletion if confirmed
+        const res: APIResponceModel = await firstValueFrom(this.customerService.deleteCustomer(id));
+  
+        if (res.isSuccess) {
+          // Success message using SweetAlert
+          Swal.fire('Deleted!', 'Customer has been deleted successfully.', 'success');
+          this.loadCustomers(); // Reload the customer list
+        } else {
+          Swal.fire('Error!', res.message, 'error');
+        }
+      } catch (error: any) {
+        Swal.fire('Error!', error.message, 'error');
+      }
+    } else if (result.dismiss === Swal.DismissReason.cancel) {
+      // Optional message for cancellation
+      Swal.fire('Cancelled', 'Customer deletion has been cancelled.', 'info');
+    }
   }
 
-  onEdit(data: Customer) {
-    this.customerObj = { ...data }; // Use spread operator to clone the data into customerObj
+  async onEdit(data: Customer) {
+    this.customerObj = { ...data };
   }
 }
